@@ -1,4 +1,4 @@
- // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract Election{
@@ -35,7 +35,8 @@ contract Election{
     }
 
     // payable function to get the address of the sender of the transaction
-    function vote(string memory name) public{
+    function vote(string memory name) payable public{
+        require(voted[msg.sender] == false, "This address has already casted a vote in the election");
         // compare the hashes of the strings
         require(keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked("Candidate A"))
         || keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked("Candidate B")),
@@ -44,6 +45,7 @@ contract Election{
         require(electionUnderway == true, "This election has now ended.");
         // add one vote to the candidate
         voteCount[name] += 1;
+        voted[msg.sender] = true;
     }
 
     // function for the user to be able to see the list of candidates
