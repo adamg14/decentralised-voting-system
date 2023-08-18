@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+ // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract Election{
@@ -13,6 +13,8 @@ contract Election{
     mapping(address => bool) public voted;
     address immutable owner;
     Candidate[] public candidates;
+    string electionWinner;
+    bool electionUnderway;
 
     constructor(){
         // initialise the owner of the election as the address that deployed the smart contract
@@ -24,6 +26,7 @@ contract Election{
         // add each candidate to the list of canidates
         addCandidate("Candidate A", "Party A");
         addCandidate("Candidate B", "Party B");
+        electionUnderway = true;
     }
 
     // add the candidates in the election
@@ -37,6 +40,8 @@ contract Election{
         require(keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked("Candidate A"))
         || keccak256(abi.encodePacked(name)) == keccak256(abi.encodePacked("Candidate B")),
         "Entity you are trying to vote for is not a candidate.");
+        // require the election to be active
+        require(electionUnderway == true, "This election has now ended.");
         // add one vote to the candidate
         voteCount[name] += 1;
     }
@@ -90,5 +95,15 @@ contract Election{
         }
         return winner;
     }
+
+    function endElection() public isOwner returns(string memory){
+        electionWinner = currentWinner();
+        electionUnderway = false;
+        return electionWinner;
+    }
     // stop the election - add an isOwner function that verifies that the address stopping the election is the address that deployed the smart contract
+    modifier isOwner{
+        require(msg.sender == owner, "You do not have access to this function as you are not the owner of this smart contract.");
+        _;
+    }
 }
