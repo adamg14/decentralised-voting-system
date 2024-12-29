@@ -1,4 +1,4 @@
-# decentralised-voting-system
+# Decentralised Voting System
 A decentralized application (dApp) for conducting secure and transparent elections, utilizing Ethereum smart contracts deployed via the ethers.js library. This smart contract was deployed to the Sepolia Ethereum Testnet.
 
 ## Features
